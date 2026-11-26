@@ -1,6 +1,7 @@
 # Trace — Customer Support Workflow UI
 
 Trace is a front-end prototype for exploring customer-support workflow runs. It shows stage-by-stage activity, source references, run progress, and history in a responsive workspace with three light themes.
+Live URL: https://workflow-trace.netlify.app/ 
 
 > **Prototype:** workflow runs, progress, history, metrics, and source data are simulated in the browser. This sample does not connect to a customer-support platform or backend and should not be used with real customer data.
 
