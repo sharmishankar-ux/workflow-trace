@@ -1,0 +1,20 @@
+<div class="sample-page">
+  <div class="page-eyebrow"><span class="eyebrow-dot"></span> NORTHSTAR WORKSPACE <span class="eyebrow-id">{{ state.activePageLabel.toUpperCase() }}</span></div>
+  <section class="title-row"><div><h1>{{ state.activePageLabel }}</h1><p class="page-subtitle">{{ state.activePageDescription }}</p></div><span class="sample-date">Updated just now</span></section>
+<section class="sample-card sample-section-card history-card"><div class="sample-section-heading"><div><h2>Workflow history</h2><p>Review past runs and check their status.</p></div><span class="history-total">{{ state.historyRuns.length }} runs</span></div>
+                    @if (state.historyNotice) { <div class="history-notice"><span>✓</span>{{ state.historyNotice }}</div> }
+                    <div class="history-table-head"><span>WORKFLOW</span><span>STATUS</span><span>STARTED BY</span><span>DATE</span><span>DURATION</span></div>
+                    @for (run of state.historyRuns; track run.id) {
+                      <button type="button" class="history-row" (click)="state.toggleHistoryRun(run.id)" [attr.aria-expanded]="state.expandedHistoryRunId === run.id"><span class="history-name"><i>◉</i><span><strong>{{ run.name }}</strong><small>{{ run.id }} · {{ run.subject }}</small></span></span><span><b class="status-pill" [class.pill-failed]="run.status === 'Failed'">{{ run.status }}</b></span><span class="history-owner">{{ run.owner }}</span><span class="history-date">{{ run.date }}</span><span class="history-duration">{{ run.duration }} <i class="history-chevron" [class.open]="state.expandedHistoryRunId === run.id">⌄</i></span></button>
+                      @if (state.expandedHistoryRunId === run.id) {
+                        <div class="history-detail"><div class="history-detail-heading"><strong>Run details</strong><span>{{ run.status === 'Failed' ? 'Stopped at ' + run.failedAt : 'All 6 stages completed' }}</span></div>
+                          @for (stage of run.stages || state.stages; track stage.number; let stageIndex = $index) {
+                            <section class="history-stage"><div class="history-stage-head"><span class="history-stage-number" [class.failed]="state.historicalStageState(run, stageIndex) === 'Failed'" [class.pending]="state.historicalStageState(run, stageIndex) === 'Pending'">{{ state.historicalStageState(run, stageIndex) === 'Complete' ? '✓' : stage.number }}</span><strong>{{ stage.name }}</strong><span class="history-stage-status" [class.failed-text]="state.historicalStageState(run, stageIndex) === 'Failed'" [class.pending-text]="state.historicalStageState(run, stageIndex) === 'Pending'">{{ state.historicalStageState(run, stageIndex) }}</span></div>
+                              <div class="history-step-list">@for (step of stage.steps; track step.title; let stepIndex = $index) { <div class="history-step" [class.step-finished]="state.historicalStepState(run, stageIndex, stepIndex) === 'Complete'" [class.step-failed]="state.historicalStepState(run, stageIndex, stepIndex) === 'Failed'"><span class="history-step-mark">{{ state.historicalStepState(run, stageIndex, stepIndex) === 'Complete' ? '✓' : state.historicalStepState(run, stageIndex, stepIndex) === 'Failed' ? '!' : '·' }}</span><span><strong>{{ step.title }}</strong><small>{{ step.detail }}</small>@if (step.reference) { <em>{{ step.reference }}</em> }</span><time>{{ step.time }}</time></div> }</div>
+                            </section>
+                          }
+                        </div>
+                      }
+                    }
+                  </section>
+</div>

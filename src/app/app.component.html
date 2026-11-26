@@ -1,0 +1,49 @@
+<div class="app-shell" [class.sidebar-collapsed]="state.sidebarCollapsed" [attr.data-theme]="state.theme">
+  <aside class="sidebar" aria-label="Main navigation">
+    <div class="brand"><div class="brand-mark">t<span>·</span></div><span class="brand-name">trace<span class="brand-dot">.</span></span></div>
+    <div class="workspace-switch"><div class="workspace-icon">N</div><div class="workspace-copy"><strong>Northstar Studio</strong><span>Workspace</span></div><span class="chevron">⌄</span></div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav>
+      <a class="nav-item" href="#overview" [class.active]="state.activePage === 'overview'" (click)="state.navigate($event, 'overview')"><span class="nav-icon">◫</span><span>Overview</span></a>
+      <a class="nav-item" href="#workflow" [class.active]="state.activePage === 'workflows' || state.activePage === 'current-workflow'" (click)="state.navigate($event, 'workflows')"><span class="nav-icon">◉</span><span>Workflows</span><span class="nav-count">4</span></a>
+      @if (state.currentRun) {
+        <a class="workflow-subnav" href="#current-workflow" [class.active]="state.activePage === 'current-workflow'" (click)="state.navigate($event, 'current-workflow')"><span class="subnav-rail"></span><span class="subnav-copy"><strong>Current run</strong><small>{{ state.currentRun.name }}</small><span class="subnav-progress"><i [style.width.%]="state.progressPercent"></i></span></span><span class="subnav-state subnav-live">{{ state.progressPercent }}%</span></a>
+      }
+      <a class="nav-item" href="#sources" [class.active]="state.activePage === 'sources'" (click)="state.navigate($event, 'sources')"><span class="nav-icon">▤</span><span>Sources</span></a>
+      <a class="nav-item" href="#activity" [class.active]="state.activePage === 'activity'" (click)="state.navigate($event, 'activity')"><span class="nav-icon">◷</span><span>Activity</span></a>
+      <a class="nav-item" href="#history" [class.active]="state.activePage === 'history'" (click)="state.navigate($event, 'history')"><span class="nav-icon">↺</span><span>History</span></a>
+    </nav>
+    <div class="nav-label nav-label-spaced">MANAGE</div>
+    <nav>
+      <a class="nav-item" href="#team" [class.active]="state.activePage === 'team'" (click)="state.navigate($event, 'team')"><span class="nav-icon">♧</span><span>Team</span></a>
+      <a class="nav-item" href="#settings" [class.active]="state.activePage === 'settings'" (click)="state.navigate($event, 'settings')"><span class="nav-icon">⚙</span><span>Settings</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="usage-card"><div class="usage-top"><span>Monthly runs</span><span>68%</span></div><div class="usage-meter"><span></span></div><small>68 of 100 runs used</small></div>
+      <div class="user-card"><div class="avatar">AM</div><div class="user-copy"><strong>Alex Morgan</strong><span>Admin</span></div><span class="more">···</span></div>
+    </div>
+  </aside>
+
+  <div class="main-column">
+    <header class="topbar">
+      <div class="topbar-left"><button class="icon-button menu-toggle" (click)="state.toggleSidebar()" [attr.aria-label]="state.sidebarCollapsed ? 'Expand menu' : 'Collapse menu'">☰</button><div class="breadcrumbs"><span>Workspace</span><span class="crumb-sep">/</span><strong>{{ state.activePageLabel }}</strong></div></div>
+      <div class="topbar-right"><button class="new-workflow-button" (click)="state.navigateTo('new-workflow')"><span>＋</span><span class="new-workflow-label">New workflow</span><span class="new-workflow-short">New</span></button><button class="icon-button help-button" aria-label="Help">?</button><span class="topbar-divider"></span><div class="avatar top-avatar">AM</div></div>
+    </header>
+
+    <div class="main-scroll"><main class="content">
+      @switch (state.activePage) {
+        @case ('overview') { <app-overview-page class="page-enter"></app-overview-page> }
+        @case ('workflows') { <app-workflow-details-page class="page-enter"></app-workflow-details-page> }
+        @case ('sources') { <app-sources-page class="page-enter"></app-sources-page> }
+        @case ('activity') { <app-activity-page class="page-enter"></app-activity-page> }
+        @case ('history') { <app-history-page class="page-enter"></app-history-page> }
+        @case ('current-workflow') { <app-current-workflow-page class="page-enter"></app-current-workflow-page> }
+        @case ('new-workflow') { <app-new-workflow-page class="page-enter"></app-new-workflow-page> }
+        @case ('team') { <app-team-page class="page-enter"></app-team-page> }
+        @case ('settings') { <app-settings-page class="page-enter"></app-settings-page> }
+      }
+    </main></div>
+
+    <footer class="footer"><span>© 2024 Trace Systems</span><div><a href="#privacy">Privacy</a><a href="#docs">Documentation</a><span class="system-status"><i></i> All systems operational</span><label class="theme-picker"><span>Theme</span><select [value]="state.theme" (change)="state.setTheme($event)" aria-label="Choose a color theme"><option value="glacier">Glacier</option><option value="mint">Mint</option><option value="rose">Coral</option></select></label></div></footer>
+  </div>
+</div>

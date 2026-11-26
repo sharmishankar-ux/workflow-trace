@@ -1,0 +1,46 @@
+<div class="workflow-page page-enter">
+          <div class="page-eyebrow"><span class="eyebrow-dot"></span> WORKFLOW RUN <span class="eyebrow-id">WF-2024-00842</span></div>
+          @if (state.currentRun) { <div class="current-run-banner"><span class="current-banner-pulse"></span><span class="current-banner-copy"><strong>A workflow is running</strong><small>{{ state.currentRun.name }} · {{ state.progressPercent }}% complete</small></span><button (click)="state.navigateTo('current-workflow')">View live progress →</button></div> }
+          <section class="title-row"><div><h1>Customer support escalation</h1><p class="page-subtitle">A complete, transparent record of what happened and why.</p></div><button class="export-button" (click)="state.exportSummary()"><span>⇩</span> Export report</button></section>
+
+          <section class="run-card" aria-label="Workflow run summary">
+            <div class="run-status"><div class="status-icon">✓</div><div><span class="card-kicker">RUN STATUS</span><strong>Completed successfully</strong></div></div>
+            <div class="run-metric"><span class="card-kicker">STARTED</span><strong>Today, 10:42 AM</strong><small>by Alex Morgan</small></div>
+            <div class="run-metric"><span class="card-kicker">DURATION</span><strong>2m 18s</strong><small>Across 6 stages</small></div>
+            <div class="run-metric"><span class="card-kicker">SOURCES USED</span><strong>8 references</strong><small>4 files · 4 systems</small></div>
+          </section>
+
+          <section class="workflow-section">
+            <div class="section-heading"><div><h2>Workflow timeline</h2><p>Expand a stage to see every action, decision, and source.</p></div><div class="section-actions"><button class="expand-all reference-toggle" (click)="state.toggleReferences()" [attr.aria-state.expanded]="state.showReferences" aria-controls="references">{{ state.showReferences ? 'Hide reference library' : 'Go to references below ↓ · 8' }}</button><button class="expand-all" (click)="state.toggleAll()">{{ state.allExpanded ? 'Collapse all' : 'Expand all' }} <span>{{ state.allExpanded ? '⌃' : '⌄' }}</span></button></div></div>
+            <div class="timeline">
+              @for (stage of state.stages; track stage.number; let last = $last) {
+                <article class="stage" [class.stage-open]="state.expanded[stage.number]">
+                  <div class="timeline-rail"><div class="stage-node" [class.node-active]="stage.status === 'In progress'" [class.node-pending]="stage.status === 'Pending'">{{ stage.status === 'Complete' ? '✓' : stage.number }}</div>@if (!last) { <div class="rail-line" [class.rail-muted]="stage.status === 'Pending'"></div> }</div>
+                  <div class="stage-card">
+                    <button class="stage-header" (click)="state.toggleStage(stage.number)" [attr.aria-state.expanded]="state.expanded[stage.number]">
+                      <span class="stage-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
+                        @switch (stage.number) {
+                          @case ('01') { <path d="M8 4.5h8M9 3h6a1 1 0 0 1 1 1v2H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M8.5 11h7M8.5 15h7"/> }
+                          @case ('02') { <path d="M3.5 7.5h7l2 2h8v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11Z"/><path d="M3.5 9.5h17"/> }
+                          @case ('03') { <path d="M4 20V11h4v9M10 20V5h4v15M16 20v-7h4v7"/><path d="M3 20.5h18"/> }
+                          @case ('04') { <path d="m14.5 5.5 4 4M4 20l4.3-1 10.6-10.6a2.1 2.1 0 0 0-3-3L5.3 16 4 20Z"/> }
+                          @case ('05') { <path d="m12 3 7 3v5c0 4.5-2.9 7.8-7 10-4.1-2.2-7-5.5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/> }
+                          @case ('06') { <path d="M5 19.5h14M7 16l5-11 5 11M9 12h6"/> }
+                        }
+                      </svg></span><span class="stage-title-wrap"><span class="stage-title-line"><strong>{{ stage.name }}</strong><span class="status-pill" [class.pill-progress]="stage.status === 'In progress'" [class.pill-pending]="stage.status === 'Pending'">{{ stage.status }}</span></span><span class="stage-summary">{{ stage.summary }}</span></span><span class="stage-meta"><span class="duration">◷ {{ stage.duration }}</span><span class="expand-chevron" [class.rotated]="state.expanded[stage.number]">⌄</span></span>
+                    </button>
+                    @if (state.expanded[stage.number]) {
+                      <div class="stage-details"><div class="details-label">{{ stage.steps.length }} ACTIONS <span>·</span> {{ stage.name.toUpperCase() }}</div>
+                        @for (step of stage.steps; track step.title; let finalStep = $last) {
+                          <div class="step-row"><div class="step-marker" [class.marker-note]="step.kind === 'note'" [class.marker-source]="step.kind === 'source'">{{ step.kind === 'done' ? '✓' : step.kind === 'source' ? '↗' : 'i' }}</div><div class="step-copy"><strong>{{ step.title }}</strong><p>{{ step.detail }}</p>@if (step.reference) { <a class="reference" href="#references">{{ step.reference }} <span>↗</span></a> }</div><time>{{ step.time }}</time></div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          </section>
+
+          <section class="reference-panel" id="references" [hidden]="!state.showReferences"><div class="reference-heading"><div class="reference-icon">⌁</div><div><h2>Reference library</h2><p>Materials consulted during this workflow run</p></div><span class="reference-count">8</span></div><div class="reference-list"><div class="ref-item"><span class="ref-file pdf">PDF</span><span><strong>Support Escalation Playbook.pdf</strong><small>Support operations · Updated Nov 18, 2026</small></span><span class="ref-used">Used in 2 state.stages</span><span class="ref-arrow">↗</span></div><div class="ref-item"><span class="ref-file sheet">CSV</span><span><strong>Support Queue Export.csv</strong><small>Customer support · 24 ticket events</small></span><span class="ref-used">Used in 3 state.stages</span><span class="ref-arrow">↗</span></div><div class="ref-item"><span class="ref-file link">WEB</span><span><strong>Product status and known issues</strong><small>status.northstar.example · Accessed today</small></span><span class="ref-used">Used in 1 stage</span><span class="ref-arrow">↗</span></div></div><button class="view-all">View all 8 references <span>→</span></button></section>
+          </div>
